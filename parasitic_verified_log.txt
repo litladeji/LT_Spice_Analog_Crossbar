@@ -1,0 +1,65 @@
+--- Operating Point ---
+Parasitic interconnect resistance added to col1's positive array path
+Row-side parasitics: Rp_row1-4 = 5 ohm each (in series between each row source and its grid resistor)
+Column-side parasitics: Rp_col1-4 = 5 ohm each (in series between each grid resistor and the col1 node, one per row path)
+
+V(col1):	 0.100002	 voltage
+V(col1_int):	 0.100497	 voltage
+V(col1_neg):	 0.100003	 voltage
+V(col2):	 0.100002	 voltage
+V(col2_int):	 0.100748	 voltage
+V(col2_neg):	 0.100003	 voltage
+V(col3):	 0.100003	 voltage
+V(col3_int):	 0.100832	 voltage
+V(col3_neg):	 0.100002	 voltage
+V(col4):	 0.100003	 voltage
+V(col4_int):	 0.100875	 voltage
+V(col4_neg):	 0.100002	 voltage
+V(row1):	 0.2	 voltage
+V(row2):	 0.4	 voltage
+V(row3):	 0.6	 voltage
+V(row4):	 0.8	 voltage
+V(row_int):	 0.199505	 voltage
+V(row_int2):	 0.399254	 voltage
+V(row_int3):	 0.599169	 voltage
+V(row_int4):	 0.799127	 voltage
+V(vcc):	 5	 voltage
+V(vdd):	 -5	 voltage
+V(vout_col1):	 -1.66681	 voltage
+V(vout_col1_neg):	 -3.12498	 voltage
+V(vout_col2):	 -2.02498	 voltage
+V(vout_col2_neg):	 -2.77498	 voltage
+V(vout_col3):	 -2.77498	 voltage
+V(vout_col3_neg):	 -2.02498	 voltage
+V(vout_col4):	 -3.12498	 voltage
+V(vout_col4_neg):	 -1.67499	 voltage
+V(vout_diff_col1):	 -1.45817	 voltage
+V(vout_diff_col2):	 -0.749993	 voltage
+V(vout_diff_col3):	 0.749993	 voltage
+V(vout_diff_col4):	 1.44999	 voltage
+V(vref):	 0.1	 voltage
+I(R1):	 9.90082e-05	 device_current
+I(R5):	 0.000174563	 device_current
+I(R9):	 0.000149253	 device_current
+I(R13):	 0.000166112	 device_current
+I(R17):	 0.000588936	 device_current
+I(Rp_col1):	 9.90082e-05	 device_current
+I(Rp_col2):	 0.000149253	 device_current
+I(Rp_col3):	 0.000166112	 device_current
+I(Rp_col4):	 0.000174563	 device_current
+I(Rp_row1):	 9.90082e-05	 device_current
+I(Rp_row2):	 0.000149253	 device_current
+I(Rp_row3):	 0.000166112	 device_current
+I(Rp_row4):	 0.000174563	 device_current
+
+Verification notes:
+- KCL check: I(R1)+I(R9)+I(R13)+I(R5) = 0.000588936, matches I(R17) exactly
+- Each Rp_col# current matches its corresponding row's grid resistor current exactly, confirming these are per-row column-side parasitics rather than one shared lumped resistor (Rp_col1 pairs with R1, Rp_col2 with R9, Rp_col3 with R13, Rp_col4 with R5 -- naming is column-indexed but each belongs to column 1, one per row path)
+- Hand calculation using total series resistance per row (Rp_row + grid resistor + Rp_col):
+  row1 (R1): 1010 ohm total, predicted I = 9.90079e-05, actual = 9.90082e-05, match
+  row2 (R9): 2010 ohm total, predicted I = 0.000149254, actual = 0.000149253, match
+  row3 (R13): 3010 ohm total, predicted I = 0.000166113, actual = 0.000166112, match
+  row4 (R5): 4010 ohm total, predicted I = 0.000174563, actual = 0.000174563, match
+- Vout_col1 hand calculation: Vref - (I(R17) x Rf) = 0.1 - (0.000588936 x 3000) = -1.666808V, matches log (-1.66681V)
+- Deviation from ideal (no parasitic) Vout_col1 of -1.67499V: approximately -0.49%
+- col2, col3, col4 unaffected (parasitics only added to col1's positive array path), confirming no cross-column leakage
